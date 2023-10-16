@@ -25,9 +25,12 @@ export default function Home() {
         <Link href={'/seller/myClients'}>
           <button className="btn-blue">My Clients</button>
         </Link>
-        <button className="btn-cyan">My Customers</button>
-        <button className="btn-slate">Button A</button>
-        <button className="btn-red">Button A</button>
+        <Link href={'/seller/payment'}>
+        <button className="btn-cyan">My Payments</button>
+        </Link>
+        <Link href={'/seller/payment'}>
+          <button className="btn-red">Register Payment</button>
+        </Link>
       </div>
     </>
   )

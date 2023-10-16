@@ -1,10 +1,10 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import ListClients from '@/app/components/ListClients';
 
 export default function MyClients() {
   const token = localStorage.getItem('token')
+  console.log('token en page', token)
 
   if (!token) {
     redirect('/login');
@@ -12,7 +12,7 @@ export default function MyClients() {
 
   return (
     <section>
-        <ListClients token={token} />
+        hola
     </section>
   )
 }

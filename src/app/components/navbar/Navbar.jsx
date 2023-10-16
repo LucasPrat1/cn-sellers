@@ -30,8 +30,7 @@ const Navbar = () => {
               <div className="flex space-x-4">
                 <Link href={"/seller"} className='text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-500 focus:text-black rounded-md px-3 py-2 text-sm font-medium'>Home</Link>
                 <Link href={"/seller/myClients"} className='text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-500 focus:text-black rounded-md px-3 py-2 text-sm font-medium'>My Clients</Link>
-                <Link href={"#"} className='text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-500 focus:text-black rounded-md px-3 py-2 text-sm font-medium'>Projects</Link>
-                <Link href={"#"} className='text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-500 focus:text-black rounded-md px-3 py-2 text-sm font-medium'>Calendar</Link>
+                <Link href={"/seller/myPayments"} className='text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-500 focus:text-black rounded-md px-3 py-2 text-sm font-medium'>My Payments</Link>
               </div>
             </div>
             <ButtonLogin />
