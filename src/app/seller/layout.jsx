@@ -1,6 +1,7 @@
+
 import '../globals.css'
-import Navbar from '../components/navbar/Navbar'
-import CurrentUser from '../components/CurrentUser'
+import Navbar from '../../components/Navbar'
+import CurrentUser from '../../components/CurrentUser'
 
 export const metadata = {
   title: 'Comercial Nevada',

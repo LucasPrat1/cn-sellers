@@ -1,3 +1,5 @@
+import SessionAuthProvider from '@/context/SessionAuthProvider'
+import './globals.css'
 
 export const metadata = {
   title: 'Comercial Nevada',
@@ -8,7 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <SessionAuthProvider>
+          {children}
+        </SessionAuthProvider>
       </body>
     </html>
   )

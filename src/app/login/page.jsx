@@ -1,71 +1,57 @@
 'use client'
 
 import React, { useState } from 'react';
-// import { redirect } from 'next/navigation'
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-console.log('process.env.', process.env.NEXT_PUBLIC_CN_API_URL)
+// export const fetchLogin = async (email, password) => {
+//   try {
+//     const response = await fetch(`${process.env.NEXT_PUBLIC_CN_API_URL}/sellers/login`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         email,
+//         password
+//       })
+//     });
+//     const res = await response.json();
+//     if (res.error) {
+//       throw res
+//     }
+//     return res
+//   } catch (error) {
+//     console.error(error.message)
+//     return error
+//   }
+// };
 
-// const fetchLogin = async (email, password) => {
-//   return await fetch(`http://localhost:5000/api/sellers/login`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-type': 'application/json'
-//     },
-//     body: JSON.stringify({
-//       email,
-//       password
-//     })
-//   })
-//   .then(res => res.json())
-//   .catch(error => console.error(error))
-// }
-
-export const fetchLogin2 = async (email, password) => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_CN_API_URL}/sellers/login`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        password
-      })
-    });
-    const res = await response.json();
-    if (res.error) {
-      throw res
-    }
-    return res
-  } catch (error) {
-    console.error(error.message)
-    return error
-  }
-};
-
-
-
-export default function LoginPage() {
+export default function FormLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter()
+  const [error, setError] = useState('');
 
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('email y password', email + password)
-    const login = await fetchLogin2(email, password)
+    setError('');
+
+    const login = await signIn("credentials", {
+      email,
+      password,
+      redirect: false
+    })
+
     console.log('login', login)
-    if (login.error) {
-      alert(login.message);
+
+    if (login?.error) {
+      setError(login?.error)
     } else {
-      localStorage.setItem('token', login.data.token)
-      localStorage.setItem('userName', login.data.name)
-      localStorage.setItem('userEmail', login.data.email)
-      alert(login.message);
       router.push('/seller');
     }
+
   };
 
   return (
@@ -98,6 +84,11 @@ export default function LoginPage() {
       >
         Iniciar sesión
       </button>
+      {error && (
+        <div className="p-2 text-red-800 border border-red-500 rounded-lg bg-red-50">
+          <p className="text-center font-medium">{error}</p>
+        </div>
+      )}
     </form>
   );
 };

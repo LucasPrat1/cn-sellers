@@ -1,4 +1,4 @@
-const fetchClients = async (token) => {
+export const fetchClients = async (token) => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_CN_API_URL}/clients/bySeller`, {
       method: 'GET',
@@ -16,6 +16,7 @@ const fetchClients = async (token) => {
     return error
   }
 };
+
 
 export default async function ListClients({ token }) {
   const clients = await fetchClients(token);

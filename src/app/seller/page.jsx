@@ -1,19 +1,7 @@
-'use client'
 
 import Link from 'next/link'
-import '../globals.css'
-import { redirect } from 'next/navigation'
-import { useEffect } from 'react'
 
 export default function Home() {
-
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      redirect('/login')
-    }
-  }, [])
-
   return (
     <>
       <h1 className='text-2xl font-medium my-2'>Welcome seller</h1>
@@ -25,7 +13,7 @@ export default function Home() {
         <Link href={'/seller/myClients'}>
           <button className="btn-blue">My Clients</button>
         </Link>
-        <Link href={'/seller/payment'}>
+        <Link href={'/seller/myPayments'}>
         <button className="btn-cyan">My Payments</button>
         </Link>
         <Link href={'/seller/payment'}>
