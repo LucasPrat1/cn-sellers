@@ -1,11 +1,9 @@
 'use client'
 
 import React, { useState } from 'react';
-import { redirect } from 'next/navigation'
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { setAuth } from '../app/seller/page';
 
-console.log('process.env.', process.env.NEXT_PUBLIC_CN_API_URL)
 
 export const fetchLogin = async (email, password) => {
   try {
@@ -33,18 +31,17 @@ export const fetchLogin = async (email, password) => {
 export default function FormLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //   const router = useRouter()
+    const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const login = await fetchLogin(email, password)
-    console.log('login', login)
     if (login.error) {
       alert(login.message);
     } else {
       setAuth(login.data.token, login.data.name);
       alert(login.message);
-      redirect('/seller');
+      router.push('/seller');
     }
   };
 

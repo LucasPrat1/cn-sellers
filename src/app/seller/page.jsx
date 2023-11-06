@@ -1,4 +1,5 @@
 
+import '../globals.css'
 import Link from 'next/link'
 
 export default function Home() {
@@ -16,7 +17,7 @@ export default function Home() {
         <Link href={'/seller/myPayments'}>
         <button className="btn-cyan">My Payments</button>
         </Link>
-        <Link href={'/seller/payment'}>
+        <Link href={'/seller/newPayment'}>
           <button className="btn-red">Register Payment</button>
         </Link>
       </div>

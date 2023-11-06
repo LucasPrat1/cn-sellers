@@ -2,6 +2,8 @@
 import '../globals.css'
 import Navbar from '../../components/Navbar'
 import CurrentUser from '../../components/CurrentUser'
+import StoreProvider from '@/context/store'
+
 
 export const metadata = {
   title: 'Comercial Nevada',
@@ -14,9 +16,11 @@ export default function Layout({ children }) {
       <Navbar />
       <main className="min-h-screen p-4">
         <CurrentUser />
-        <section className='container mx-auto p-4 bg-white rounded shadow'>
-          {children}
-        </section>
+        <StoreProvider>
+          <section className='container mx-auto p-4 bg-white rounded shadow'>
+            {children}
+          </section>
+        </StoreProvider>
       </main>
     </>
   )
