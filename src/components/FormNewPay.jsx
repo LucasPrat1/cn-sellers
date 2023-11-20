@@ -61,6 +61,7 @@ export default function FormNewPay() {
   } = useForm()
 
   const onSubmit = (data) => {
+    event.preventDefault();
     console.log('data', data)
   }
 
@@ -79,7 +80,6 @@ export default function FormNewPay() {
             </Label>
             <Select
               id="client"
-              name="client"
               {...register("client", { required: true })}
             >
               {clients.map((cli) => (
@@ -95,8 +95,8 @@ export default function FormNewPay() {
             </Label>
             <TextInput
               type="date"
-              name="date"
               id="date"
+              defaultValue={new Date().toISOString().split("T")[0]}
               {...register("date", {
                 required: true,
                 // max: new Date().toISOString().split("T")[0],

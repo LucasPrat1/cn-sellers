@@ -1,92 +1,87 @@
-
-'use client';
+'use client'
 
 import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-export default function AddDocument({ showAddDoc, setShowAddDoc, setDocuments, documents }) {
-  const [date, setDate] = useState('');
-  const [num, setNum] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [descripcion, setDescripcion] = useState('');
+const AddDocument = ({ showAddDoc, setShowAddDoc, setDocuments, documents }) => {
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+
+  const onClick = (data) => {
+    event.preventDefault();
+    const { number, date, amount, description } = data;
+    setDocuments([...documents, {
+      number,
+      date,
+      amount: Number(amount),
+      description
+    }])
+    reset();
+    setShowAddDoc(false);
+  }
 
   if (!showAddDoc) {
     return null
   }
 
-  const onCloseModal = () => {
-    setShowAddDoc(false);
-    setDate('');
-    setDescripcion('');
-    setNum(0);
-    setTotal(0);
-  }
-
-  const onClick = () => {
-    setDocuments([...documents, {
-      number: num,
-      date: date,
-      amount: total,
-      description: descripcion
-    }])
-    onCloseModal();
-  }
-
   return (
-    <Modal show={showAddDoc} size="md" onClose={onCloseModal} popup>
+    <Modal show={showAddDoc} size='md' onClose={() => setShowAddDoc(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className="text-xl text-gray-100">Agregar documento a cobrar</h3>
+        <h3 className='text-xl text-gray-100'>Agregar documento a cobrar</h3>
       </Modal.Header>
       <Modal.Body>
-        <div className="mt-2 space-y-4">
+        <form className='mt-2 space-y-2' onSubmit={handleSubmit(onClick)}>
           <div>
-            <Label htmlFor="date" value="Date" />
+            <Label htmlFor='date' value='Date' />
             <TextInput
-              id="date"
+              id='date'
               type='date'
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
-              required
+              {...register('date', { required: true })}
+              max={new Date().toISOString().split('T')[0]} // Establece la fecha máxima como hoy
             />
+            {errors.date && <span className='text-sm text-red-600'>the Date must be less than today</span>}
           </div>
 
           <div>
-            <Label htmlFor="num" value="Number Document" />
+            <Label htmlFor='number' value='Number Document' />
             <TextInput
-              id="num"
+              id='number'
               type='number'
-              value={num}
-              onChange={(event) => setNum(event.target.value)}
-              required
+              {...register('number', { required: true, min: 0, max: 99999 })}
             />
+            {errors.number?.type === 'required' ? <span className='text-sm text-red-600'>the number is required</span>
+              : errors.number && <span className='text-sm text-red-600'>the number is invalid</span>}
           </div>
 
           <div>
-              <Label htmlFor="total" value="Total" />
+            <Label htmlFor='amount' value='Total' />
             <TextInput
-              id="total"
+              id='amount'
               type='number'
-              value={total}
-              onChange={(event) => setTotal(event.target.value)}
-              required
+              {...register('amount', { required: true, min: 0 })}
             />
+            {errors.amount && <span className='text-sm text-red-600'>the amount is required</span>}
           </div>
 
           <div>
-              <Label htmlFor="descripcion" value="Observaciones" />
+            <Label htmlFor='description' value='Observaciones' />
             <TextInput
-              id="descripcion"
-              value={descripcion}
-              onChange={(event) => setDescripcion(event.target.value)}
+              id='description'
+              {...register('description', { maxLength: 300 })}
             />
+            {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
-          <div className="w-full">
-            <Button onClick={() => onClick()}>Confirmar</Button>
-          </div>
-        </div>
+          <Button type='submit' fullSized pill color='success'>Confirm</Button>
+        </form>
       </Modal.Body>
     </Modal>
   );
 }
+
+export default AddDocument

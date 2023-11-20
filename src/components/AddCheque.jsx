@@ -1,120 +1,106 @@
 'use client';
 
 import { Button, Label, Modal, TextInput, Checkbox } from 'flowbite-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 
 const AddCheque = ({ showAddCheque, setShowAddCheque, setCheques, cheques }) => {
-  const [number, setNumber] = useState(0);
-  const [payDate, setPayDate] = useState('');
-  const [amount, setAmount] = useState(0);
-  const [echeq, setEcheq] = useState(false);
-  const [bank, setBank] = useState('')
-  const [description, setDescription] = useState('');
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+
+  const submitCheque = (data) => {
+    event.preventDefault();
+    const { number, payDate, amount, bank, description, echeq } = data;
+    setCheques([...cheques, {
+      number,
+      payDate,
+      amount: Number(amount),
+      echeq,
+      bank,
+      description
+    }])
+    reset();
+    setShowAddCheque(false);
+  }
 
   if (!showAddCheque) {
     return null
   }
 
-  const onCloseModal = () => {
-    setShowAddCheque(false);
-    setNumber(0);
-    setPayDate('');
-    setAmount(0);
-    setEcheq(false);
-    setBank('');
-    setDescription('');
-  }
-
-  const submitCheque = (event) => {
-    event.preventDefault();
-    setCheques([...cheques, {
-      number,
-      payDate,
-      amount,
-      echeq,
-      bank,
-      description
-    }])
-    onCloseModal();
-  }
-
   return (
-    <Modal show={showAddCheque} size="md" onClose={onCloseModal} popup>
+    <Modal show={showAddCheque} size='md' onClose={() => setShowAddCheque(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className="text-xl text-gray-100">Registrar Cheque</h3>
+        <h3 className='text-xl text-gray-100'>Registrar Cheque</h3>
       </Modal.Header>
       <Modal.Body>
-        <form className="mt-2 space-y-2" onSubmit={submitCheque}>
+        <form className='mt-2 space-y-2' onSubmit={handleSubmit(submitCheque)}>
           <div>
-            <Label htmlFor="payDate" value="Pay Date" />
+            <Label htmlFor='payDate' value='Pay Date' />
             <TextInput
-              id="payDate"
+              id='payDate'
               type='date'
-              value={payDate}
-              onChange={(event) => setPayDate(event.target.value)}
+              {...register('payDate', { required: true })}
               min={(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]}
               max={(new Date(new Date().getTime() + 90 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]}
-              required
             />
+            {errors.payDate && <span className='text-sm text-red-600'>the Pay Date must be 90 day maximum</span>}
           </div>
 
           <div>
-            <Label htmlFor="number" value="Cheque Number" />
+            <Label htmlFor='number' value='Cheque Number' />
             <TextInput
-              id="number"
+              id='number'
               type='number'
-              value={Number(number)}
-              onChange={(event) => setNumber(Number(event.target.value))}
-              required
-              min={1}
-              max={99999999}
+              {...register('number', { required: true, min: 1, max: 99999999 })}
             />
+            {errors.number?.type === 'required' ? <span className='text-sm text-red-600'>the number is required</span>
+              : errors.number && <span className='text-sm text-red-600'>the number is invalid</span>}
           </div>
 
           <div>
-            <Label htmlFor="bank" value="Bank" />
+            <Label htmlFor='bank' value='Bank' />
             <TextInput
-              id="bank"
-              value={bank}
-              onChange={(event) => setBank(event.target.value)}
-              required
-              maxLength={50}
+              id='bank'
+              {...register('bank', { required: true, maxLength: 30 })}
             />
+            {errors.bank?.type === 'required' && <span className='text-sm text-red-600'>the Bank is required</span>}
+            {errors.bank?.type === 'maxLength' && <span className='text-sm text-red-600'>the Bank is invalid</span>}
           </div>
 
           <div>
-            <Label htmlFor="amount" value="Amount" />
+            <Label htmlFor='amount' value='Amount' />
             <TextInput
-              id="amount"
+              id='amount'
               type='number'
-              value={Number(amount)}
-              onChange={(event) => setAmount(Number(event.target.value))}
-              required
-              min={1}
+              {...register('amount', { required: true, min: 1 })}
             />
+            {errors.amount && <span className='text-sm text-red-600'>the Amount is required</span>}
           </div>
 
           <div>
-            <Label htmlFor="description" value="Observaciones" />
+            <Label htmlFor='description' value='Observaciones' />
             <TextInput
-              id="description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              maxLength={300}
+              id='description'
+              {...register('description', { maxLength: 300 })}
             />
+            {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
           <div>
             <Checkbox
               id='echeq'
-              onChange={(event) => setEcheq(event.target.checked)}
+              {...register('echeq')}
+            // onChange={(event) => setEcheq(event.target.checked)}
             />
-            <Label className='ml-4' htmlFor="echeq" value="Es Echeq?" />
+            <Label className='ml-4' htmlFor='echeq' value='Es Echeq?' />
           </div>
 
-          <Button type='submit'>confirm</Button>
+          <Button type='submit' fullSized pill color='success'>Confirm</Button>
         </form>
       </Modal.Body>
     </Modal>

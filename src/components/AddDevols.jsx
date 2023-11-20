@@ -1,115 +1,109 @@
-
 'use client';
 
 import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-export default function AddDevols({ showAddDevols, setShowAddDevols, setDevols, devols }) {
-  const [date, setDate] = useState('');
-  const [num, setNum] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [descripcion, setDescripcion] = useState('');
-  const [codProd, setCodProd] = useState('');
-  const [descProd, setDescProd] = useState('');
+const AddDevols = ({ showAddDevols, setShowAddDevols, setDevols, devols }) => {
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+
+  const onClick = (data) => {
+    event.preventDefault();
+    const { number, date, amount, description, codProd, descProd } = data;
+    setDevols([...devols, {
+      number,
+      date,
+      amount: Number(amount),
+      description,
+      codProd,
+      descProd
+    }])
+    reset();
+    setShowAddDevols(false);
+  }
 
 
   if (!showAddDevols) {
     return null
   }
 
-  const onCloseModal = () => {
-    setShowAddDevols(false);
-    setDate('');
-    setDescripcion('');
-    setNum(0);
-    setTotal(0);
-    setCodProd('');
-    setDescProd('');
-  }
-
-  const onClick = () => {
-    setDevols([...devols, {
-      number: num,
-      date: date,
-      amount: total,
-      description: descripcion,
-      codProd: codProd,
-      descProd: descProd
-    }])
-    onCloseModal();
-  }
-
   return (
-    <Modal show={showAddDevols} size="md" onClose={onCloseModal} popup>
+    <Modal show={showAddDevols} size='md' onClose={() => setShowAddDevols(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className="text-xl text-gray-100">Agregar Devoluciones</h3>
+        <h3 className='text-xl text-gray-100'>Agregar Devoluciones</h3>
       </Modal.Header>
       <Modal.Body>
-        <div className="mt-2 space-y-4">
+        <form className='mt-2 space-y-2' onSubmit={handleSubmit(onClick)}>
           <div>
-            <Label htmlFor="date" value="Date" />
+            <Label htmlFor='date' value='Date' />
             <TextInput
-              id="date"
+              id='date'
               type='date'
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
-              required
+              {...register('date', { required: true })}
+              max={new Date().toISOString().split('T')[0]} // Establece la fecha máxima como hoy
             />
+            {errors.date && <span className='text-sm text-red-600'>the date date must be less than today</span>}
           </div>
 
           <div>
-            <Label htmlFor="num" value="Number Document" />
+            <Label htmlFor='number' value='Number Document' />
             <TextInput
-              id="num"
+              id='number'
               type='number'
-              value={num}
-              onChange={(event) => setNum(event.target.value)}
+              {...register('number', { min: 0, max: 99999 })}
             />
+            {errors.number && <span className='text-sm text-red-600'>the number is invalid</span>}
           </div>
 
           <div>
-            <Label htmlFor="codProd" value="Product Code" />
+            <Label htmlFor='codProd' value='Product Code' />
             <TextInput
-              id="codProd"
-              value={codProd}
-              onChange={(event) => setCodProd(event.target.value)}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="descProd" value="Product Description" />
-            <TextInput
-              id="descProd"
-              value={descProd}
-              onChange={(event) => setDescProd(event.target.value)}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="total" value="Total" />
-            <TextInput
-              id="total"
+              id='codProd'
               type='number'
-              value={total}
-              onChange={(event) => setTotal(event.target.value)}
-              required
+              {...register('codProd', { min: 1000000, max: 9999999 })}
             />
+            {errors.codProd && <span className='text-sm text-red-600'>the Product Code is invalid</span>}
           </div>
 
           <div>
-            <Label htmlFor="descripcion" value="Observaciones" />
+            <Label htmlFor='descProd' value='Product Description' />
             <TextInput
-              id="descripcion"
-              value={descripcion}
-              onChange={(event) => setDescripcion(event.target.value)}
+              id='descProd'
+              {...register('descProd', { required: true, maxLength: 300 })}
             />
+            {errors.descProd?.type === 'required' ? <span className='text-sm text-red-600'>the Product Description is required</span>
+              : errors.descProd && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
-          <div className="w-full">
-            <Button onClick={() => onClick()}>Confirmar</Button>
+          <div>
+            <Label htmlFor='amount' value='Total' />
+            <TextInput
+              id='amount'
+              type='number'
+              {...register('amount', { required: true, min: 0 })}
+            />
+            {errors.amount && <span className='text-sm text-red-600'>the amount is required</span>}
           </div>
-        </div>
+
+          <div>
+            <Label htmlFor='description' value='Observaciones' />
+            <TextInput
+              id='description'
+              {...register('description', { maxLength: 300 })}
+            />
+            {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
+          </div>
+
+          <Button type='submit' fullSized pill color='success'>Confirm</Button>
+        </form>
       </Modal.Body>
     </Modal>
   );
 }
+
+export default AddDevols

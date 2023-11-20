@@ -1,96 +1,90 @@
 'use client';
 
 import { Button, Label, Modal, TextInput, Select } from 'flowbite-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 
 const AddTransfer = ({ showAddTransfer, setShowAddTransfer, setTransfers, transfers }) => {
-  const [date, setDate] = useState('');
-  const [amount, setAmount] = useState(0);
-  const [bank, setBank] = useState('')
-  const [description, setDescription] = useState('');
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+
+  const submitTransfer = (data) => {
+    event.preventDefault();
+    const { date, amount, bank, description } = data;
+    setTransfers([...transfers, {
+      number: transfers.length + 1,
+      date,
+      amount: Number(amount),
+      bank,
+      description
+    }])
+    reset();
+    setShowAddTransfer(false);
+  }
 
   if (!showAddTransfer) {
     return null
   }
 
-  const onCloseModal = () => {
-    setShowAddTransfer(false);
-    setDate('');
-    setAmount(0);
-    setBank('');
-    setDescription('');
-  }
-
-  const submitCheque = (event) => {
-    event.preventDefault();
-    setTransfers([...transfers, {
-      number: transfers.length + 1,
-      date,
-      amount,
-      bank,
-      description
-    }])
-    onCloseModal();
-  }
 
   return (
-    <Modal show={showAddTransfer} size="md" onClose={onCloseModal} popup>
+    <Modal show={showAddTransfer} size='md' onClose={() => setShowAddTransfer(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className="text-xl text-gray-100">Registrar Cheque</h3>
+        <h3 className='text-xl text-gray-100'>Registrar Transferencia</h3>
       </Modal.Header>
       <Modal.Body>
-        <form className="mt-2 space-y-2" onSubmit={submitCheque}>
+        <form className='mt-2 space-y-2' onSubmit={handleSubmit(submitTransfer)}>
           <div>
-            <Label htmlFor="date" value="Date" />
+            <Label htmlFor='date' value='Date' />
             <TextInput
-              id="date"
+              id='date'
               type='date'
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
-              min={(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]}
-              max={new Date().toISOString().split("T")[0]}
-              required
+              {...register('date', { required: true })}
+              min={new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]} // minimo primer dia del corriente mes
+              max={new Date().toISOString().split('T')[0]} // maximo hoy
             />
+            {errors.date && <span className='text-sm text-red-600'>the Date is required</span>}
           </div>
 
           <div>
-            <Label htmlFor="bank" value="Bank" />
+            <Label htmlFor='bank' value='Destination Bank' />
             <Select
               id='bank'
-              onChange={(event) => setBank(event.target.value)}
-              required>
+              {...register('bank', { required: true })}
+              >
               <option value={'SANTA FE'} >SANTA FE</option>
               <option value={'FRANCES'} >FRANCES</option>
               <option value={'HSBC'} >HSBC</option>
               <option value={'MERCADO PAGO'} >MERCADO PAGO</option>
             </Select>
+            {errors.bank && <span className='text-sm text-red-600'>the Bank is required</span>}
           </div>
 
           <div>
-            <Label htmlFor="amount" value="Amount" />
+            <Label htmlFor='amount' value='Amount' />
             <TextInput
-              id="amount"
+              id='amount'
               type='number'
-              value={Number(amount)}
-              onChange={(event) => setAmount(Number(event.target.value))}
-              required
-              min={1}
+              {...register('amount', { required: true, min: 1 })}
             />
+            {errors.amount && <span className='text-sm text-red-600'>the Amount is required</span>}
           </div>
 
           <div>
-            <Label htmlFor="description" value="Observaciones" />
+            <Label htmlFor='description' value='Observaciones' />
             <TextInput
-              id="description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              maxLength={300}
+              id='description'
+              {...register('description', { maxLength: 300 })}
             />
+            {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
-          <Button type='submit'>confirm</Button>
+          <Button type='submit' fullSized pill color='success'>Confirm</Button>
         </form>
       </Modal.Body>
     </Modal>
