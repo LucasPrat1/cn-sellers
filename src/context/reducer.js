@@ -59,7 +59,7 @@ export const reducer = (state, action) => {
     case ADD_PAYMENT_SUCCESS:
       return {
         ...state,
-        list: [...state.list, action.payload],
+        payments: [...state.payments, action.payload],
         isLoading: false,
         error: false
       };

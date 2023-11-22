@@ -35,7 +35,7 @@ const AddTransfer = ({ showAddTransfer, setShowAddTransfer, setTransfers, transf
   return (
     <Modal show={showAddTransfer} size='md' onClose={() => setShowAddTransfer(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className='text-xl text-gray-100'>Registrar Transferencia</h3>
+        <span className='text-xl text-gray-100'>Registrar Transferencia</span>
       </Modal.Header>
       <Modal.Body>
         <form className='mt-2 space-y-2' onSubmit={handleSubmit(submitTransfer)}>
@@ -84,7 +84,7 @@ const AddTransfer = ({ showAddTransfer, setShowAddTransfer, setTransfers, transf
             {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
-          <Button type='submit' fullSized pill color='success'>Confirm</Button>
+          <Button onClick={handleSubmit(submitTransfer)} fullSized pill color='success'>Confirm</Button>
         </form>
       </Modal.Body>
     </Modal>

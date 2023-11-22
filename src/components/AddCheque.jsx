@@ -35,7 +35,7 @@ const AddCheque = ({ showAddCheque, setShowAddCheque, setCheques, cheques }) => 
   return (
     <Modal show={showAddCheque} size='md' onClose={() => setShowAddCheque(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className='text-xl text-gray-100'>Registrar Cheque</h3>
+        <span className='text-xl text-gray-100'>Registrar Cheque</span>
       </Modal.Header>
       <Modal.Body>
         <form className='mt-2 space-y-2' onSubmit={handleSubmit(submitCheque)}>
@@ -95,12 +95,11 @@ const AddCheque = ({ showAddCheque, setShowAddCheque, setCheques, cheques }) => 
             <Checkbox
               id='echeq'
               {...register('echeq')}
-            // onChange={(event) => setEcheq(event.target.checked)}
             />
             <Label className='ml-4' htmlFor='echeq' value='Es Echeq?' />
           </div>
 
-          <Button type='submit' fullSized pill color='success'>Confirm</Button>
+          <Button onClick={handleSubmit(submitCheque)} fullSized pill color='success'>Confirm</Button>
         </form>
       </Modal.Body>
     </Modal>

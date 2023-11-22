@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Label, Modal, TextInput, Textarea } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
 
 const AddDocument = ({ showAddDoc, setShowAddDoc, setDocuments, documents }) => {
@@ -32,7 +32,7 @@ const AddDocument = ({ showAddDoc, setShowAddDoc, setDocuments, documents }) => 
   return (
     <Modal show={showAddDoc} size='md' onClose={() => setShowAddDoc(false)} popup>
       <Modal.Header className='bg-gray-600'>
-        <h3 className='text-xl text-gray-100'>Agregar documento a cobrar</h3>
+        <span className='text-xl text-gray-100'>Agregar documento a cobrar</span>
       </Modal.Header>
       <Modal.Body>
         <form className='mt-2 space-y-2' onSubmit={handleSubmit(onClick)}>
@@ -70,14 +70,15 @@ const AddDocument = ({ showAddDoc, setShowAddDoc, setDocuments, documents }) => 
 
           <div>
             <Label htmlFor='description' value='Observaciones' />
-            <TextInput
+            <Textarea
               id='description'
+              rows={3}
               {...register('description', { maxLength: 300 })}
             />
             {errors.description && <span className='text-sm text-red-600'>description max 300 characters</span>}
           </div>
 
-          <Button type='submit' fullSized pill color='success'>Confirm</Button>
+          <Button onClick={handleSubmit(onClick)} fullSized pill color='success'>Confirm</Button>
         </form>
       </Modal.Body>
     </Modal>

@@ -53,3 +53,38 @@ export const FetchPayments = async (token, dispatch) => {
     return error
   }
 };
+
+export const AddPayments = async (token, newPayment, dispatch) => {
+  try {
+    await dispatch({ type: ADD_PAYMENT_PENDING });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_CN_API_URL}/payments`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        client: newPayment.client,
+        date: newPayment.date,
+        documents: newPayment.documents,
+        devols: newPayment.devols,
+        discount: newPayment.discount,
+        total: newPayment.total,
+        cash: newPayment.totalCash,
+        payAccount: newPayment.totalPayAccount,
+        transfers: newPayment.transfers,
+        cheques: newPayment.cheques
+      })
+    });
+    const res = await response.json();
+    if (res.error) {
+      throw res
+    }
+    await dispatch({ type: ADD_PAYMENT_SUCCESS, payload: res.data });
+    return res
+  } catch (error) {
+    await dispatch({ type: ADD_PAYMENT_ERROR });
+    console.error(error.message)
+    return error
+  }
+};
